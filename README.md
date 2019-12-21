@@ -6,6 +6,10 @@ Generates bitcoin paper wallet offline in a single html page with p2wpkh address
 
 # Usage
 
+Cut the dotted line, fold the black area over the private key, plastify the paper.
+
+# Software usage
+
 Requires [rust](https://www.rust-lang.org/)
 
 ```
