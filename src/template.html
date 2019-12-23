@@ -5,7 +5,7 @@
     <title>Title</title>
     <style>
        body {{
-           width: 260px;
+           width: 280px;
            align-items: center;
            border: dashed;
            border-width: thin;
@@ -19,20 +19,29 @@
            text-align: center;
        }}
        div.black {{
-           height:260px;
+           height:280px;
            background-color: black;
+       }}
+       div.both {{
+           height:280px;
        }}
 
     </style>
 </head>
 <body>
 
-<div class="break-word">{}</div>
-<div class="center">{}</div>
-<br>
-<br>
-<div class="break-word">{}</div>
-<div class="center">{}</div>
+<div class="both">
+    <div class="break-word">{}</div>
+    <div class="center">{}</div>
+</div>
+
 <div class="black"></div>
+<div class="black"></div>
+
+<div class="both">
+    <div class="break-word">{}</div>
+    <div class="center">{}</div>
+</div>
+
 </body>
 </html>
