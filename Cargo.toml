@@ -7,6 +7,5 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bitcoin = "0.24.0"
-rand = "0.7.3"
+bitcoin = { version="0.25.0", features =["rand"]}
 qrcode = "0.11.0"

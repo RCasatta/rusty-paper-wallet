@@ -1,18 +1,17 @@
-use bitcoin::util::bip32::ExtendedPrivKey;
-use bitcoin::{secp256k1, Address, Network};
-use qrcode::render::svg;
-use qrcode::QrCode;
-use rand::Rng;
+use bitcoin::{secp256k1, Address, Network, PrivateKey};
+use qrcode::{render::svg, QrCode};
 use std::io::Write;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 fn main() -> Result<()> {
-    let secp = secp256k1::Secp256k1::signing_only();
-    let seed = rand::thread_rng().gen::<[u8; 32]>();
-    let extended_key = ExtendedPrivKey::new_master(Network::Bitcoin, &seed)?;
-    let private_key = extended_key.private_key;
-    let public_key = private_key.public_key(&secp);
+    let key = secp256k1::SecretKey::new(&mut bitcoin::secp256k1::rand::thread_rng());
+    let private_key = PrivateKey {
+        compressed: true,
+        network: Network::Bitcoin,
+        key,
+    };
+    let public_key = private_key.public_key(&secp256k1::Secp256k1::signing_only());
     let address = Address::p2wpkh(&public_key, Network::Bitcoin)?.to_string();
     let wif = private_key.to_wif();
     println!("wif {}", wif);
