@@ -19,5 +19,9 @@ $ cargo run
 wif L4rHbEMQJPFn6GUVNZttgfb4HpEZbXeTf3xAWECJHmgqQ2utDhRx
 p2wpkh bc1q6zm2qndz4qtq4h6hh802j3v5gggd4825lntffn
 writing bc1q6zm2qndz4qtq4h6hh802j3v5gggd4825lntffn.html
-
 ```
+
+## Supports different kind of addresses:
+* legacy pay to public key hash with `ADDRESS_TYPE=p2pkh cargo run`
+* nested segwit pay to script hash with `ADDRESS_TYPE=p2shwpkh cargo run`
+* standard p2wpkh with `cargo run`

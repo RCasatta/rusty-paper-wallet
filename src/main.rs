@@ -12,13 +12,25 @@ fn main() -> Result<()> {
         key,
     };
     let public_key = private_key.public_key(&secp256k1::Secp256k1::signing_only());
-    let address = Address::p2wpkh(&public_key, Network::Bitcoin)?.to_string();
+
+    let address_type = std::env::var("ADDRESS_TYPE").unwrap_or("p2wpkh".to_string());
+    let address = match address_type.as_str() {
+        "p2wpkh" => Address::p2wpkh(&public_key, Network::Bitcoin)?.to_string(),
+        "p2pkh" => Address::p2pkh(&public_key, Network::Bitcoin).to_string(),
+        "p2shwpkh" => Address::p2shwpkh(&public_key, Network::Bitcoin)?.to_string(),
+        _ => panic!("invalid ADDRESS_TYPE"),
+    };
+    let optionally_uppercased = if address == "p2wpkh" {
+        address.to_uppercase()
+    } else {
+        address.clone()
+    };
     let wif = private_key.to_wif();
     println!("wif {}", wif);
-    println!("p2wpkh {}", address);
+    println!("{} {}", address_type, address);
 
     let wif_qr_svg = create_svg_qr(&wif)?;
-    let address_qr_svg = create_svg_qr(&address.to_uppercase())?;
+    let address_qr_svg = create_svg_qr(&optionally_uppercased)?;
 
     let page = format!(
         include_str!("template.html"),
