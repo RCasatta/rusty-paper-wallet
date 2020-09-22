@@ -1,4 +1,4 @@
-use bitcoin::{secp256k1, Address, Network, PrivateKey};
+use bitcoin::{secp256k1, Address, Network, PrivateKey, PublicKey};
 use qrcode::{render::svg, QrCode};
 use std::io::Write;
 
@@ -11,15 +11,16 @@ fn main() -> Result<()> {
         network: Network::Bitcoin,
         key,
     };
-    let public_key = private_key.public_key(&secp256k1::Secp256k1::signing_only());
+    let secp = secp256k1::Secp256k1::signing_only();
+    let public_key = private_key.public_key(&secp);
+    let public_key_check = private_key.public_key(&secp);
+    assert_eq!(public_key, public_key_check, "Bip flip!");
 
     let address_type = std::env::var("ADDRESS_TYPE").unwrap_or("p2wpkh".to_string());
-    let address = match address_type.as_str() {
-        "p2wpkh" => Address::p2wpkh(&public_key, Network::Bitcoin)?.to_string(),
-        "p2pkh" => Address::p2pkh(&public_key, Network::Bitcoin).to_string(),
-        "p2shwpkh" => Address::p2shwpkh(&public_key, Network::Bitcoin)?.to_string(),
-        _ => panic!("invalid ADDRESS_TYPE"),
-    };
+    let address = create_address(&public_key, &address_type)?;
+    let address_check = create_address(&public_key, &address_type)?;
+    assert_eq!(address, address_check, "Bip flip!");
+
     let optionally_uppercased = if address == "p2wpkh" {
         address.to_uppercase()
     } else {
@@ -43,6 +44,15 @@ fn main() -> Result<()> {
     file.write_all(page.as_bytes())?;
 
     Ok(())
+}
+
+fn create_address(public_key: &PublicKey, address_type: &String) -> Result<String> {
+    Ok(match address_type.as_str() {
+        "p2wpkh" => Address::p2wpkh(&public_key, Network::Bitcoin)?.to_string(),
+        "p2pkh" => Address::p2pkh(&public_key, Network::Bitcoin).to_string(),
+        "p2shwpkh" => Address::p2shwpkh(&public_key, Network::Bitcoin)?.to_string(),
+        _ => panic!("invalid ADDRESS_TYPE"),
+    })
 }
 
 fn create_svg_qr(message: &str) -> Result<String> {
