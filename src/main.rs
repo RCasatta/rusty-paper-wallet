@@ -1,6 +1,6 @@
 use bitcoin::{secp256k1, Address, Network, PrivateKey, PublicKey};
-use qrcode::{render::svg, QrCode};
-use std::io::Write;
+use qrcode::{Color, QrCode};
+use std::io::{Cursor, Write};
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
@@ -30,18 +30,24 @@ fn main() -> Result<()> {
     println!("wif {}", wif);
     println!("{} {}", address_type, address);
 
-    let wif_qr_svg = create_svg_qr(&wif)?;
-    let address_qr_svg = create_svg_qr(&optionally_uppercased)?;
+    let wif_qr_svg = create_bmp_base64_qr(&wif)?;
+    let address_qr_svg = create_bmp_base64_qr(&optionally_uppercased)?;
 
     let page = format!(
         include_str!("template.html"),
         address, address_qr_svg, wif, wif_qr_svg
     );
-    let file_name = format!("{}.html", address);
 
-    println!("writing {}", &file_name);
-    let mut file = std::fs::File::create(file_name)?;
-    file.write_all(page.as_bytes())?;
+    let base64 = base64::encode(&page);
+    let data_url = format!("data:text/html;base64,{}", base64);
+    println!("{}", data_url);
+
+    if let Ok(_) = std::env::var("SAVE_TO_FILE") {
+        let file_name = format!("{}.html", address);
+        println!("writing {}", &file_name);
+        let mut file = std::fs::File::create(file_name)?;
+        file.write_all(page.as_bytes())?;
+    }
 
     Ok(())
 }
@@ -55,12 +61,24 @@ fn create_address(public_key: &PublicKey, address_type: &String) -> Result<Strin
     })
 }
 
-fn create_svg_qr(message: &str) -> Result<String> {
+fn create_bmp_base64_qr(message: &str) -> Result<String> {
     let qr = QrCode::new(message.as_bytes())?;
-    Ok(qr
-        .render()
-        .min_dimensions(200, 200)
-        .dark_color(svg::Color("#000000"))
-        .light_color(svg::Color("#ffffff"))
-        .build())
+    let width = qr.width();
+    let data: Vec<bool> = qr
+        .into_colors()
+        .iter()
+        .map(|e| match e {
+            Color::Light => false,
+            Color::Dark => true,
+        })
+        .collect();
+    let bmp = bmp_monochrome::Bmp::new(data, width)
+        .unwrap()
+        .mul(3)
+        .add_whitespace(12);
+    let mut cursor = Cursor::new(vec![]);
+    bmp.write(&mut cursor).unwrap();
+    let base64 = base64::encode(&cursor.into_inner());
+    let data_url = format!("data:image/bmp;base64,{}", base64);
+    Ok(data_url)
 }

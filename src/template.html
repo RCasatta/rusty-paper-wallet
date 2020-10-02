@@ -14,9 +14,11 @@
            word-break: break-all;
            background-color: lightgray;
            padding: 5px;
+           -webkit-print-color-adjust: exact;
        }}
        div.center {{
            text-align: center;
+           height:280px;
        }}
        div.black {{
            height:280px;
@@ -33,7 +35,7 @@
 
 <div class="both">
     <div class="break-word">{}</div>
-    <div class="center">{}</div>
+    <div class="center"><img src="{}"/></div>
 </div>
 
 <div class="black"></div>
@@ -41,7 +43,7 @@
 
 <div class="both">
     <div class="break-word">{}</div>
-    <div class="center">{}</div>
+    <div class="center"><img src="{}"/></div>
 </div>
 
 </body>

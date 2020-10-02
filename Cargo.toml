@@ -9,3 +9,6 @@ edition = "2018"
 [dependencies]
 bitcoin = { version="0.25.0", features =["rand"]}
 qrcode = "0.11.0"
+bmp-monochrome = "0.4.0"
+base64 = "0.12.3"
+open = "1.4.0"
