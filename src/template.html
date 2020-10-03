@@ -18,24 +18,27 @@
        }}
        div.center {{
            text-align: center;
-           height:280px;
+           height: 280px;
        }}
        div.black {{
            height:280px;
            background-color: black;
            -webkit-print-color-adjust: exact;
        }}
-       div.both {{
-           height:280px;
+       img.qr {{
+           height: 210px;
+           margin: 35px;
+           image-rendering: pixelated;
        }}
-
     </style>
 </head>
 <body>
 
 <div class="both">
     <div class="break-word">{}</div>
-    <div class="center"><img src="{}"/></div>
+    <div class="center">
+        <img class="qr" src="{}"/>
+    </div>
 </div>
 
 <div class="black"></div>
@@ -43,7 +46,9 @@
 
 <div class="both">
     <div class="break-word">{}</div>
-    <div class="center"><img src="{}"/></div>
+    <div class="center">
+        <img class="qr" src="{}"/>
+    </div>
 </div>
 
 </body>

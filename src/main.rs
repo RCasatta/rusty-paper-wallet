@@ -27,14 +27,14 @@ fn main() -> Result<()> {
         address.clone()
     };
     let wif = private_key.to_wif();
-    println!("wif {}", wif);
-    println!("{} {}", address_type, address);
+    //println!("wif {}", wif);
+    //println!("{} {}", address_type, address);
 
     let wif_qr_svg = create_bmp_base64_qr(&wif)?;
     let address_qr_svg = create_bmp_base64_qr(&optionally_uppercased)?;
 
     let page = format!(
-        include_str!("template.html"),
+        include_str!("template-min.html"),
         address, address_qr_svg, wif, wif_qr_svg
     );
 
@@ -72,10 +72,7 @@ fn create_bmp_base64_qr(message: &str) -> Result<String> {
             Color::Dark => true,
         })
         .collect();
-    let bmp = bmp_monochrome::Bmp::new(data, width)
-        .unwrap()
-        .mul(3)
-        .add_whitespace(12);
+    let bmp = bmp_monochrome::Bmp::new(data, width).unwrap();
     let mut cursor = Cursor::new(vec![]);
     bmp.write(&mut cursor).unwrap();
     let base64 = base64::encode(&cursor.into_inner());
