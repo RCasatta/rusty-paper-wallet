@@ -14,12 +14,12 @@ fn main() -> Result<()> {
     let secp = secp256k1::Secp256k1::signing_only();
     let public_key = private_key.public_key(&secp);
     let public_key_check = private_key.public_key(&secp);
-    assert_eq!(public_key, public_key_check, "Bip flip!");
+    assert_eq!(public_key, public_key_check, "Bit flip!");
 
     let address_type = std::env::var("ADDRESS_TYPE").unwrap_or("p2wpkh".to_string());
     let address = create_address(&public_key, &address_type)?;
     let address_check = create_address(&public_key, &address_type)?;
-    assert_eq!(address, address_check, "Bip flip!");
+    assert_eq!(address, address_check, "Bit flip!");
 
     let optionally_uppercased = if address == "p2wpkh" {
         address.to_uppercase()
