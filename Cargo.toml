@@ -3,6 +3,13 @@ name = "rusty-paper-wallet"
 version = "0.2.0"
 authors = ["Riccardo Casatta <riccardo@casatta.it>"]
 edition = "2018"
+license = "MIT"
+description = "Generates bitcoin paper wallet"
+homepage = "https://github.com/RCasatta/bmp-monochrome"
+repository = "https://github.com/RCasatta/bmp-monochrome"
+documentation = "https://docs.rs/bmp-monochrome/"
+keywords = ["bitcoin", "paper", "wallet", "offline"]
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
