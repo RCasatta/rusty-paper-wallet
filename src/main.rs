@@ -16,7 +16,7 @@ fn main() -> Result<()> {
     let public_key_check = private_key.public_key(&secp);
     assert_eq!(public_key, public_key_check, "Bit flip!");
 
-    let address_type = std::env::var("ADDRESS_TYPE").unwrap_or("p2wpkh".to_string());
+    let address_type = std::env::var("ADDRESS_TYPE").unwrap_or_else(|_| "p2wpkh".to_string());
     let address = create_address(&public_key, &address_type)?;
     let address_check = create_address(&public_key, &address_type)?;
     assert_eq!(address, address_check, "Bit flip!");
@@ -42,7 +42,7 @@ fn main() -> Result<()> {
     let data_url = format!("data:text/html;base64,{}", base64);
     println!("{}", data_url);
 
-    if let Ok(_) = std::env::var("SAVE_TO_FILE") {
+    if std::env::var("SAVE_TO_FILE").is_ok() {
         let file_name = format!("{}.html", address);
         println!("writing {}", &file_name);
         let mut file = std::fs::File::create(file_name)?;
@@ -52,8 +52,8 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn create_address(public_key: &PublicKey, address_type: &String) -> Result<String> {
-    Ok(match address_type.as_str() {
+fn create_address(public_key: &PublicKey, address_type: &str) -> Result<String> {
+    Ok(match address_type {
         "p2wpkh" => Address::p2wpkh(&public_key, Network::Bitcoin)?.to_string(),
         "p2pkh" => Address::p2pkh(&public_key, Network::Bitcoin).to_string(),
         "p2shwpkh" => Address::p2shwpkh(&public_key, Network::Bitcoin)?.to_string(),
