@@ -1,6 +1,6 @@
 [package]
 name = "rusty-paper-wallet"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["Riccardo Casatta <riccardo@casatta.it>"]
 edition = "2018"
 license = "MIT"
@@ -14,5 +14,5 @@ readme = "README.md"
 [dependencies]
 bitcoin = { version="0.25.0", features =["rand"]}
 qrcode = "0.12.0"
-bmp-monochrome = "0.7.0"
+bmp-monochrome = "0.9.0"
 base64 = "0.13.0"
