@@ -1,4 +1,4 @@
-name: bmp-monochrome
+name: rusty-paper-wallet
 
 on:
   push:
