@@ -44,3 +44,8 @@ cargo run
 * legacy pay to public key hash with `ADDRESS_TYPE=p2pkh rusty-paper-wallet`
 * nested segwit pay to script hash with `ADDRESS_TYPE=p2shwpkh rusty-paper-wallet`
 * standard p2wpkh with `rusty-paper-wallet`
+
+## Minimum Supported Rust Version (MSRV)
+
+*Rust 1.34*
+
