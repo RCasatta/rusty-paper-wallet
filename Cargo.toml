@@ -12,7 +12,6 @@ keywords = ["bitcoin", "paper", "wallet", "offline"]
 readme = "README.md"
 
 [dependencies]
-bitcoin = { version="0.25.0", features =["rand"]}
-qr_code = "0.17.0"
-bmp-monochrome = "0.13.0"
+bitcoin = { version="0.25.0", features = ["rand"] }
+qr_code = { version="0.17.0", features = ["bmp"] }
 base64 = "0.13.0"

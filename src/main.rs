@@ -1,5 +1,5 @@
 use bitcoin::{secp256k1, Address, Network, PrivateKey, PublicKey};
-use qr_code::{Color, QrCode};
+use qr_code::QrCode;
 use std::io::{Cursor, Write};
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
@@ -63,16 +63,7 @@ fn create_address(public_key: &PublicKey, address_type: &str) -> Result<String> 
 
 fn create_bmp_base64_qr(message: &str) -> Result<String> {
     let qr = QrCode::new(message.as_bytes())?;
-    let width = qr.width();
-    let data: Vec<bool> = qr
-        .into_colors()
-        .iter()
-        .map(|e| match e {
-            Color::Light => false,
-            Color::Dark => true,
-        })
-        .collect();
-    let bmp = bmp_monochrome::Bmp::new(data, width).unwrap();
+    let bmp = qr.to_bmp();
     let mut cursor = Cursor::new(vec![]);
     bmp.write(&mut cursor).unwrap();
     let base64 = base64::encode(&cursor.into_inner());
