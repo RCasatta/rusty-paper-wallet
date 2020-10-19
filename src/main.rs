@@ -1,5 +1,5 @@
 use bitcoin::{secp256k1, Address, Network, PrivateKey, PublicKey};
-use qrcode::{Color, QrCode};
+use qr_code::{Color, QrCode};
 use std::io::{Cursor, Write};
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
