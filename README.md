@@ -1,5 +1,7 @@
 # Rusty-paper-wallet
 
+[![crates.io](https://img.shields.io/crates/v/rusty-paper-wallet.svg)](https://crates.io/crates/rusty-paper-wallet)
+
 Generates bitcoin paper wallet offline.
 
 ![paper-wallet](rusty-paper-wallet-example.png)
