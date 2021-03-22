@@ -1,0 +1,33 @@
+body {
+   width: 200px;
+   align-items: center;
+   font-size: smaller;
+}
+div.single {
+   border: dashed;
+   border-width: thin;
+   page-break-after: always
+}
+div.break-word {
+   word-break: break-all;
+   background-color: lightgray;
+   padding: 5px;
+   -webkit-print-color-adjust: exact;
+}
+div.pad {
+   padding: 2px;
+}
+div.center {
+   text-align: center;
+   height: 200px;
+}
+div.black {
+   height:200px;
+   background-color: black;
+   -webkit-print-color-adjust: exact;
+}
+img.qr {
+   height: 160px;
+   margin: 20px;
+   image-rendering: pixelated;
+}
