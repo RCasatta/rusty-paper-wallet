@@ -17,7 +17,6 @@ miniscript = "5.1.0"
 qr_code = { version="1.0.0", features = ["bmp"] }
 base64 = "0.13.0"
 structopt = "0.3"
-rand = "0.8"
 log = "^0.4"
 env_logger = "0.8"
 maud = "*"

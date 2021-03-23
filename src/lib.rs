@@ -2,10 +2,8 @@ use crate::error::Error;
 use crate::html::{paper_wallets, to_data_url, WalletData};
 use bitcoin::{self, secp256k1, Address, AddressType, Network, PublicKey};
 use log::debug;
-use miniscript::bitcoin::secp256k1::SecretKey;
 use miniscript::bitcoin::PrivateKey;
 use miniscript::{self, Descriptor, DescriptorTrait, TranslatePk};
-use rand::{thread_rng, Rng};
 use std::collections::HashMap;
 
 mod error;
@@ -40,15 +38,14 @@ pub fn create_key_pairs_and_address(
     descriptor_string: &Descriptor<String>,
     network: Network,
 ) -> Result<(HashMap<String, WifAndHexPub>, Address)> {
-    let mut rng = thread_rng();
     let secp = secp256k1::Secp256k1::signing_only();
     let mut keys = HashMap::new();
     let alias_to_key = |alias: &String| -> Result<PublicKey> {
-        let entropy: [u8; 32] = rng.gen();
+        let key = secp256k1::SecretKey::new(&mut bitcoin::secp256k1::rand::thread_rng());
         let sk = PrivateKey {
             compressed: true,
             network,
-            key: SecretKey::from_slice(&entropy)?,
+            key,
         };
         let key = PublicKey::from_private_key(&secp, &sk);
         keys.insert(
