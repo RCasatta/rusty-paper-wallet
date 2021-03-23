@@ -30,7 +30,12 @@ pub fn to_data_url<T: AsRef<[u8]>>(input: T, content_type: &str) -> String {
 /// Creates QR containing `message` and encode it in data url
 fn create_bmp_base64_qr(message: &str) -> Result<String> {
     let qr = QrCode::new(message.as_bytes())?;
-    let bmp = qr.to_bmp().mul(4)?;
+
+    // The `.mul(3)` with pixelated rescale shouldn't be needed, however, some printers doesn't
+    // recognize it resulting in a blurry image, starting with a bigger image mostly prevents the
+    // issue at the cost of a bigger image size.
+    let bmp = qr.to_bmp().mul(3)?;
+
     let mut cursor = Cursor::new(vec![]);
     bmp.write(&mut cursor).unwrap();
     Ok(to_data_url(cursor.into_inner(), "image/bmp"))
