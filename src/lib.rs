@@ -43,8 +43,9 @@ pub fn process(descriptor: String, network: Network) -> Result<String> {
 
 /// Creates a random key pair for the given alias and returns the public part.
 /// While doing so it insert the WIF and the Public hex in the given `keys_map`
+#[allow(clippy::unnecessary_wraps)] // avoid explicit notation on the closure
 fn alias_to_key<T: Signing>(
-    alias: &String,
+    alias: &str,
     keys_map: &mut HashMap<String, WifAndHexPub>,
     network: Network,
     secp: &Secp256k1<T>,
@@ -57,7 +58,7 @@ fn alias_to_key<T: Signing>(
     };
     let key = PublicKey::from_private_key(&secp, &sk);
     keys_map.insert(
-        alias.clone(),
+        alias.to_string(),
         WifAndHexPub {
             wif: sk.to_wif(),
             hex_pub: key.to_string(),
@@ -92,11 +93,13 @@ pub fn create_key_pairs_and_address(
 }
 
 /// Returns the element in `legend` with key `alias`, returning an error if absent
-fn alias_to_wif_or_pub(alias: &String, legend: &HashMap<&String, String>) -> Result<String> {
+#[allow(clippy::unnecessary_wraps)] // avoid explicit notation on the closure
+fn alias_to_wif_or_pub(alias: &str, legend: &HashMap<&String, String>) -> Result<String> {
+    let alias = alias.to_string();
     legend
-        .get(alias)
+        .get(&alias)
         .cloned()
-        .ok_or_else(|| Error::MissingMappedKey(alias.clone()))
+        .ok_or(Error::MissingMappedKey(alias))
 }
 
 /// Creates data for every single paper wallet (which is different according to the relative owner)
