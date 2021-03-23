@@ -1,9 +1,10 @@
 use crate::error::Error;
 use crate::html::{paper_wallets, to_data_url, WalletData};
+use bitcoin::secp256k1::{Secp256k1, Signing};
 use bitcoin::{self, secp256k1, Address, AddressType, Network, PublicKey};
 use log::debug;
 use miniscript::bitcoin::PrivateKey;
-use miniscript::{self, Descriptor, DescriptorTrait, TranslatePk};
+use miniscript::{self, Descriptor, DescriptorTrait, MiniscriptKey, TranslatePk};
 use std::collections::HashMap;
 
 mod error;
@@ -32,6 +33,32 @@ pub fn process(descriptor: String, network: Network) -> Result<String> {
     Ok(to_data_url(&html, "text/html"))
 }
 
+/// Creates a random key pair for the given alias and returns the public part.
+/// While doing so it insert the WIF and the Public hex in the given `keys_map`
+fn alias_to_key<T: Signing>(
+    alias: &String,
+    keys_map: &mut HashMap<String, WifAndHexPub>,
+    network: Network,
+    secp: &Secp256k1<T>,
+) -> Result<PublicKey> {
+    let key = secp256k1::SecretKey::new(&mut bitcoin::secp256k1::rand::thread_rng());
+    let sk = PrivateKey {
+        compressed: true,
+        network,
+        key,
+    };
+    let key = PublicKey::from_private_key(&secp, &sk);
+    keys_map.insert(
+        alias.clone(),
+        WifAndHexPub {
+            wif: sk.to_wif(),
+            hex_pub: key.to_string(),
+        },
+    );
+
+    Ok(key)
+}
+
 /// Creates a key pair for every alias in the given descriptor,
 /// Creates another descriptor replacing alias with the relative public key, so that we can compute the address.
 pub fn create_key_pairs_and_address(
@@ -40,31 +67,28 @@ pub fn create_key_pairs_and_address(
 ) -> Result<(HashMap<String, WifAndHexPub>, Address)> {
     let secp = secp256k1::Secp256k1::signing_only();
     let mut keys = HashMap::new();
-    let alias_to_key = |alias: &String| -> Result<PublicKey> {
-        let key = secp256k1::SecretKey::new(&mut bitcoin::secp256k1::rand::thread_rng());
-        let sk = PrivateKey {
-            compressed: true,
-            network,
-            key,
-        };
-        let key = PublicKey::from_private_key(&secp, &sk);
-        keys.insert(
-            alias.clone(),
-            WifAndHexPub {
-                wif: sk.to_wif(),
-                hex_pub: key.to_string(),
-            },
-        );
+    let mut keys_2 = HashMap::new();
 
-        Ok(key)
-    };
-    let descriptor_keys: Descriptor<PublicKey> =
-        descriptor_string.translate_pk(alias_to_key, |_| unreachable!())?;
+    let descriptor_keys: Descriptor<PublicKey> = descriptor_string.translate_pk(
+        |alias| alias_to_key(alias, &mut keys, network, &secp),
+        |alias| Ok(alias_to_key(alias, &mut keys_2, network, &secp)?.to_pubkeyhash()),
+    )?;
+    keys.extend(keys_2.drain());
+    drop(keys_2);
+
     debug!("descriptor_keys: {}", descriptor_keys);
     debug!("key_map: {:?}", keys);
     let address = descriptor_keys.address(network)?;
     debug!("address: {}", address.to_string());
     Ok((keys, address))
+}
+
+/// Returns the element in `legend` with key `alias`, returning an error if absent
+fn alias_to_wif_or_pub(alias: &String, legend: &HashMap<&String, String>) -> Result<String> {
+    legend
+        .get(alias)
+        .cloned()
+        .ok_or_else(|| Error::MissingMappedKey(alias.clone()))
 }
 
 /// Creates data for every single paper wallet (which is different according to the relative owner)
@@ -101,13 +125,8 @@ fn create_wallet_data(
 
         let descriptor_qr = descriptor_alias
             .translate_pk(
-                |alias| {
-                    legend
-                        .get(alias)
-                        .cloned()
-                        .ok_or_else(|| Error::MissingMappedKey(alias.clone()))
-                },
-                |_| unreachable!(),
+                |alias| alias_to_wif_or_pub(alias, &legend),
+                |alias| Ok(alias_to_wif_or_pub(alias, &legend)?.to_pubkeyhash()),
             )?
             .to_string();
         let checksum = descriptor_qr
