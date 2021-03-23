@@ -13,13 +13,13 @@ readme = "README.md"
 
 [dependencies]
 bitcoin = { version="0.26", features = ["rand"] }
-miniscript = "5.1.0"
+miniscript = "5.1"
 qr_code = { version="1.0.0", features = ["bmp"] }
 base64 = "0.13.0"
 structopt = "0.3"
 log = "^0.4"
 env_logger = "0.8"
-maud = "*"
+maud = "0.22"
 
 [lib]
 name = "rusty_paper_wallet"
