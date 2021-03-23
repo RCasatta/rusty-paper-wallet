@@ -87,15 +87,16 @@ fn create_wallet_data(
 
     let mut results = vec![];
     for alias in keys.keys() {
-        let mut legend = HashMap::new();
-        for (alias_internal, wif_and_pub) in keys.iter() {
-            debug!("int:{}", alias_internal);
-            if alias == alias_internal {
-                legend.insert(alias_internal, wif_and_pub.wif.clone());
-            } else {
-                legend.insert(alias_internal, wif_and_pub.hex_pub.clone());
-            }
-        }
+        let legend = keys
+            .iter()
+            .map(|(alias_internal, wif_and_pub)| {
+                if alias == alias_internal {
+                    (alias_internal, wif_and_pub.wif.clone())
+                } else {
+                    (alias_internal, wif_and_pub.hex_pub.clone())
+                }
+            })
+            .collect::<HashMap<_, _>>();
         debug!("legend: {:?}", legend);
 
         let descriptor_qr = descriptor_alias
