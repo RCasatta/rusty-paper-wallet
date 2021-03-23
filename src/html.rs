@@ -47,18 +47,23 @@ fn inner(data: &WalletData) -> Result<PreEscaped<String>> {
     let private_qr = create_bmp_base64_qr(&data.descriptor_qr)?;
 
     let single = html! {
-        div {
-            div class="both" {
-                div class="break-word" { (&data.alias) ": " br; (&data.address)  }
+        div class="single" {
+            div {
+                div class="break-word" {
+                    span class="bold" {
+                        (&data.alias)
+                    }
+                    br;
+                    (&data.address)
+                }
                 div class="center" {
                     img class="qr" src=(public_qr) { }
                 }
             }
 
-            div class="black" { }
-            div class="black" { }
+            div class="black" {}
 
-            div class="both" {
+            div {
                 div class="break-word" {
                     div class="pad" { (&data.descriptor_alias) }
                     @for row in &data.legend_rows { div class="pad" { (*row) }  }
@@ -89,7 +94,7 @@ pub fn paper_wallets(paper_wallets: &[WalletData]) -> Result<String> {
                 style { (css) }
             }
             body {
-                @for paper_wallet in &paper_wallets_html { div class="single" { (*paper_wallet) }  }
+                @for paper_wallet in &paper_wallets_html { (*paper_wallet)  }
             }
         }
     };
