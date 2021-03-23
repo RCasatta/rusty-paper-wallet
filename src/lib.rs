@@ -1,3 +1,9 @@
+#![deny(missing_docs)]
+
+//! # Rusty Paper Wallet
+//!
+//! Generates descriptor-based bitcoin paper wallet offline.
+
 use crate::error::Error;
 use crate::html::{paper_wallets, to_data_url, WalletData};
 use bitcoin::secp256k1::{Secp256k1, Signing};
@@ -10,8 +16,10 @@ use std::collections::HashMap;
 mod error;
 mod html;
 
+/// Result type with implicit library Error
 pub type Result<T> = std::result::Result<T, Error>;
 
+/// Contains private key in WIF format and the relative public key in HEX format
 #[derive(Debug)]
 pub struct WifAndHexPub {
     wif: String,
