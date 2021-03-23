@@ -11,7 +11,7 @@ use bitcoin::{self, secp256k1, Address, AddressType, Network, PublicKey};
 use log::debug;
 use miniscript::bitcoin::PrivateKey;
 use miniscript::{self, Descriptor, DescriptorTrait, MiniscriptKey, TranslatePk};
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 mod error;
 mod html;
@@ -46,7 +46,7 @@ pub fn process(descriptor: String, network: Network) -> Result<String> {
 #[allow(clippy::unnecessary_wraps)] // avoid explicit notation on the closure
 fn alias_to_key<T: Signing>(
     alias: &str,
-    keys_map: &mut HashMap<String, WifAndHexPub>,
+    keys_map: &mut BTreeMap<String, WifAndHexPub>,
     network: Network,
     secp: &Secp256k1<T>,
 ) -> Result<PublicKey> {
@@ -73,17 +73,16 @@ fn alias_to_key<T: Signing>(
 pub fn create_key_pairs_and_address(
     descriptor_string: &Descriptor<String>,
     network: Network,
-) -> Result<(HashMap<String, WifAndHexPub>, Address)> {
+) -> Result<(BTreeMap<String, WifAndHexPub>, Address)> {
     let secp = secp256k1::Secp256k1::signing_only();
-    let mut keys = HashMap::new();
-    let mut keys_2 = HashMap::new();
+    let mut keys = BTreeMap::new();
+    let mut keys_2 = BTreeMap::new();
 
     let descriptor_keys: Descriptor<PublicKey> = descriptor_string.translate_pk(
         |alias| alias_to_key(alias, &mut keys, network, &secp),
         |alias| Ok(alias_to_key(alias, &mut keys_2, network, &secp)?.to_pubkeyhash()),
     )?;
-    keys.extend(keys_2.drain());
-    drop(keys_2);
+    keys.extend(keys_2);
 
     debug!("descriptor_keys: {}", descriptor_keys);
     debug!("key_map: {:?}", keys);
@@ -94,7 +93,7 @@ pub fn create_key_pairs_and_address(
 
 /// Returns the element in `legend` with key `alias`, returning an error if absent
 #[allow(clippy::unnecessary_wraps)] // avoid explicit notation on the closure
-fn alias_to_wif_or_pub(alias: &str, legend: &HashMap<&String, String>) -> Result<String> {
+fn alias_to_wif_or_pub(alias: &str, legend: &BTreeMap<&String, String>) -> Result<String> {
     let alias = alias.to_string();
     legend
         .get(&alias)
@@ -105,7 +104,7 @@ fn alias_to_wif_or_pub(alias: &str, legend: &HashMap<&String, String>) -> Result
 /// Creates data for every single paper wallet (which is different according to the relative owner)
 fn create_wallet_data(
     address: Address,
-    keys: HashMap<String, WifAndHexPub>,
+    keys: BTreeMap<String, WifAndHexPub>,
     descriptor_alias: &Descriptor<String>,
 ) -> Result<Vec<WalletData>> {
     let address_string = address.to_string();
@@ -131,7 +130,7 @@ fn create_wallet_data(
                     (alias_internal, wif_and_pub.hex_pub.clone())
                 }
             })
-            .collect::<HashMap<_, _>>();
+            .collect::<BTreeMap<_, _>>();
         debug!("legend: {:?}", legend);
 
         let descriptor_qr = descriptor_alias
