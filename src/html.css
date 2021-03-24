@@ -49,7 +49,9 @@ html, body {
    box-sizing: border-box;
 }
 .pad {
-   padding: 0.1em;
+   padding-top: 0.1em;
+   padding-bottom: 0.1em;
+   font-size: x-small;
 }
 .center {
    text-align: center;
