@@ -44,11 +44,11 @@ Print the page from the browser.
 
 Cut the dotted line, fold the private key over the black area, then fold a second time, plastify the paper.
 
-NOTE: Once folded the black area should ideally cover in front and in the back the secret part (QR code and text) so that it's not visible in backlight. 
+NOTE: Once folded the black area should ideally cover in front and in the back the secret part (QR code and text) so that it's not visible in backlight.
 
 ## Descriptor
 
-Note the parameter must be a valid descriptor, 
+Note the parameter must be a valid descriptor,
 if you have a miniscript policy such as `thresh(3,pk(Alice),pk(Bob),pk(Carol),older(2))` and you want a descriptor
-you can use the online [BDK Playground Policy Compiler](https://bitcoindevkit.org/bdk-cli/playground/) or the [BDK CLI Tool](https://github.com/bitcoindevkit/bdk-cli). 
+you can use the online [BDK Playground Policy Compiler](https://bitcoindevkit.org/bdk-cli/playground/) or the [BDK CLI Tool](https://github.com/bitcoindevkit/bdk-cli).
 
