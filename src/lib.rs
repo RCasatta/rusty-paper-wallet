@@ -7,7 +7,7 @@
 use crate::error::Error;
 use crate::html::{paper_wallets, to_data_url, WalletData};
 use bitcoin::secp256k1::{Secp256k1, Signing};
-use bitcoin::{self, secp256k1, Address, AddressType, Network, PublicKey};
+use bitcoin::{self, secp256k1, Address, Network, PublicKey};
 use log::debug;
 use miniscript::bitcoin::PrivateKey;
 use miniscript::{self, Descriptor, DescriptorTrait, MiniscriptKey, TranslatePk};
@@ -107,11 +107,6 @@ fn create_wallet_data(
     keys: BTreeMap<String, WifAndHexPub>,
     descriptor_alias: &Descriptor<String>,
 ) -> Result<Vec<WalletData>> {
-    let address_string = address.to_string();
-    let address_qr = match address.address_type() {
-        Some(AddressType::P2wpkh) | Some(AddressType::P2wsh) => address_string.to_ascii_uppercase(),
-        _ => address_string.clone(),
-    };
     let descriptor_alias_string = descriptor_alias
         .to_string()
         .split('#')
@@ -146,8 +141,8 @@ fn create_wallet_data(
 
         let wallet_data = WalletData {
             alias: alias.clone(),
-            address: address_string.clone(),
-            address_qr: address_qr.clone(),
+            address: address.to_string(),
+            address_qr: address.to_qr_uri(),
             descriptor_alias: format!("{}#{}", descriptor_alias_string, checksum),
             legend_rows: legend
                 .iter()
