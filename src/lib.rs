@@ -56,7 +56,7 @@ fn alias_to_key<T: Signing>(
         network,
         key,
     };
-    let key = PublicKey::from_private_key(&secp, &sk);
+    let key = PublicKey::from_private_key(secp, &sk);
     keys_map.insert(
         alias.to_string(),
         WifAndHexPub {

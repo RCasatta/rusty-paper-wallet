@@ -6,7 +6,7 @@ Generates descriptor-based bitcoin paper wallet offline.
 
 ## Install and Run
 
-You need rust installed (MSRV 1.45).
+You need rust installed (MSRV 1.46).
 
 ```
 cargo install rusty-paper-wallet

@@ -104,7 +104,7 @@ pub fn paper_wallets(paper_wallets: &[WalletData]) -> Result<String> {
 
 #[cfg(test)]
 mod test {
-    use crate::html::{inner, paper_wallets, to_data_url, WalletData, CSS};
+    use crate::html::{inner, paper_wallets, to_data_url, WalletData};
 
     #[test]
     fn test_html() {
@@ -119,7 +119,7 @@ mod test {
             descriptor_qr: "L2a7AaJEv2ef5UE25keeHNhfN45jMepMLS9dar2ChL68fJ4L8NfL".to_string(),
         };
         let inner_html = inner(&data).unwrap();
-        //assert_eq!(single_html,"");
+        assert!(inner_html.into_string().contains(&data.address));
 
         let paper_wallets_data = vec![data.clone(), data.clone()];
         let html = paper_wallets(&paper_wallets_data).unwrap();

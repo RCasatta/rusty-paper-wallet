@@ -12,13 +12,13 @@ keywords = ["bitcoin", "paper", "wallet", "offline"]
 readme = "README.md"
 
 [dependencies]
-bitcoin = { version="0.26", features = ["rand"] }
-miniscript = "5.1"
-qr_code = { version="1.0.0", features = ["bmp"] }
+bitcoin = { version="0.27", features = ["rand"] }
+miniscript = "6.0"
+qr_code = { version="1.1.0", features = ["bmp"] }
 base64 = "0.13.0"
 structopt = "0.3"
 log = "^0.4"
-env_logger = "0.8"
+env_logger = "0.9"
 maud = "0.22"
 
 [lib]
