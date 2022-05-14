@@ -84,7 +84,7 @@ pub fn paper_wallets(paper_wallets: &[WalletData]) -> Result<String> {
     for paper_wallet in paper_wallets {
         paper_wallets_html.push(inner(paper_wallet).unwrap());
     }
-    let css = CSS.replace("\n", "").replace("  ", " ").replace("  ", " ");
+    let css = CSS.replace('\n', "").replace("  ", " ").replace("  ", " ");
     let html = html! {
         (maud::DOCTYPE)
         html {
