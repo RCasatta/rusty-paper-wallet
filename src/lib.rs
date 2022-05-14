@@ -50,11 +50,11 @@ fn alias_to_key<T: Signing>(
     network: Network,
     secp: &Secp256k1<T>,
 ) -> Result<PublicKey> {
-    let key = secp256k1::SecretKey::new(&mut bitcoin::secp256k1::rand::thread_rng());
+    let inner = secp256k1::SecretKey::new(&mut bitcoin::secp256k1::rand::thread_rng());
     let sk = PrivateKey {
         compressed: true,
         network,
-        key,
+        inner,
     };
     let key = PublicKey::from_private_key(secp, &sk);
     keys_map.insert(

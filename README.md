@@ -4,6 +4,10 @@
 
 Generates descriptor-based bitcoin paper wallet offline.
 
+## Important
+
+Older rusty-paper-wallet version 0.9.0 example wallet contains a bug, for details read here https://bitcoindevkit.org/blog/miniscript-vulnerability/
+
 ## Install and Run
 
 You need rust installed (MSRV 1.46).
@@ -14,8 +18,24 @@ cargo install rusty-paper-wallet
 
 Go offline...
 
+## Decide the spending descriptor
+
+### Simple 1-of-1
+
 ```
-$ rusty-paper-wallet "wsh(thresh(3,pk(Alice),s:pk(Bob),s:pk(Carol),sdv:older(2)))" 
+DESC="wpkh(Alice)"
+```
+
+### At least 3 satisfied condition between Alice, Bob, Carol or older than 2 blocks
+
+```
+DESC="wsh(thresh(3,pk(Alice),s:pk(Bob),s:pk(Carol),sdv:older(2)))"
+```
+
+## Launch
+
+```
+$ rusty-paper-wallet $DESC
 ```
 
 Or, in alternative, from the github repository...
@@ -23,7 +43,7 @@ Or, in alternative, from the github repository...
 ```
 $ git clone https://github.com/RCasatta/rusty-paper-wallet
 $ cd rusty-paper-wallet
-$ cargo run -- "wsh(thresh(3,pk(Alice),s:pk(Bob),s:pk(Carol),sdv:older(2)))"
+$ cargo run -- $DESC
 ```
 
 The output is:
