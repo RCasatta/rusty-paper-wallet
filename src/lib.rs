@@ -38,7 +38,7 @@ pub fn process(descriptor: String, network: Network) -> Result<String> {
 
     let html = paper_wallets(&wallet_data)?;
 
-    Ok(to_data_url(&html, "text/html"))
+    Ok(to_data_url(html, "text/html"))
 }
 
 /// Creates a random key pair for the given alias and returns the public part.
